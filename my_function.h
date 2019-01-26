@@ -98,8 +98,9 @@ struct my_function <Ret (Args ...)> {
 		f_ptr_base() {}
 		virtual Ret invoke(Args ...) = 0;
 		virtual f_ptr_base *copy_f() = 0;
-		virtual f_ptr_base *placement_copy_f(char *) = 0;
-		virtual f_ptr_base *placement_move_f(char *) = 0;
+		virtual void placement_copy_f(char *) = 0;
+		virtual void placement_move_f(char *) = 0;
+		virtual ~f_ptr_base() = default;
 	};
 
 	template <typename F>
@@ -111,10 +112,10 @@ struct my_function <Ret (Args ...)> {
 		f_ptr_base *copy_f() {
 			return new f_ptr<F>(f);
 		}
-		f_ptr_base *placement_copy_f(char *bf) {
+		void placement_copy_f(char *bf) {
 			new (bf) f_ptr<F>(f);
 		}
-		f_ptr_base *placement_move_f(char *bf) {
+		void placement_move_f(char *bf) {
 			new (bf) f_ptr<F>(std::move(f));
 		}
 		F f;
